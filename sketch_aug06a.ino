@@ -28,7 +28,7 @@ void setup() {
   pinMode(RED_PIN, OUTPUT);
   pinMode(GREEN_PIN, OUTPUT);
   pinMode(BLUE_PIN, OUTPUT);
-  pinMode(12, INPUT_PULLUP);
+  pinMode(BUTTON, INPUT_PULLUP);
 
   // Добавляем ЭЛ на нажатие кнопки
   manager.addListener(new EvtPinListener(12, (EvtAction)changeMod));
@@ -64,7 +64,7 @@ bool changeMod() {
      break;
   }
   manager.addListener(new EvtTimeListener(12, true, (EvtAction)mode));
-  manager.addListener(new EvtPinListener(12, (EvtAction)changeMod));
+  manager.addListener(new EvtPinListener(BUTTON, (EvtAction)changeMod));
   return true;
 }
 
@@ -75,18 +75,19 @@ bool changeMod() {
 
 int blinkstate = 0;
 int i = 127;
-int j = 256;
+int i_min = 127;
+int i_max = 512;
 bool blinking() {
  
   if(blinkstate == 1) {
     i++;
     whiteKAnalog(i);
-    if(i == 512)
+    if(i == i_max)
       blinkstate = 0;
   } else if(blinkstate == 0) {
     i--;
     whiteKAnalog(i);
-    if(i == 127)
+    if(i == i_min)
       blinkstate = 1;
   }
   return false;
@@ -107,7 +108,7 @@ bool migwhite() {
 int rainbowstage = 0; // stages
 int f = 0; // brightness
 bool miggreen() {
-    if(f == 512) {
+    if(f == i_max) {
       f = 0;
       if(rainbowstage < 2)
         rainbowstage++;
